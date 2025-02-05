@@ -16,6 +16,8 @@ void AMSBasePlayerController::BeginPlay()
     // Получаем настройки игры и загружаем DefaultInputMappingContext
     const UMSGameSettings* GameSettings = GetDefault<UMSGameSettings>();
     check(GameSettings);
+    if (GameSettings->DefaultInputMappingContext.IsNull())
+        checkNoEntry();
     FSoftObjectPath AssetPath = GameSettings->DefaultInputMappingContext.ToSoftObjectPath();
 
     // Начинаем асинхронную загрузку
