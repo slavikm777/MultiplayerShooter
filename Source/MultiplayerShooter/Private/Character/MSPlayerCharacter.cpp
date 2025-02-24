@@ -9,7 +9,8 @@
 #include "Components/InputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "Character/Components/MSInventoryComponent.h"
+#include "Character/Components/MSEquipmentComponent.h"
 
 AMSPlayerCharacter::AMSPlayerCharacter()
 {
@@ -30,13 +31,18 @@ void AMSPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
     check(JumpAction);
     check(MoveAction);
     check(LookAction);
+    check(MouseWheelUp);
+    check(MouseWheelDown);
+    check(LMouseButton);
     if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
     {
         EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
         EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
         EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMSPlayerCharacter::Move);
         EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMSPlayerCharacter::Look);
+        EnhancedInputComponent->BindAction(MouseWheelUp, ETriggerEvent::Triggered, this, &AMSPlayerCharacter::MouseWUp);
+        EnhancedInputComponent->BindAction(MouseWheelDown, ETriggerEvent::Triggered, this, &AMSPlayerCharacter::MouseWDown);
+        EnhancedInputComponent->BindAction(LMouseButton, ETriggerEvent::Triggered, this, &AMSPlayerCharacter::LeftMouseButton);
     }
 }
 
@@ -58,4 +64,19 @@ void AMSPlayerCharacter::Look(const FInputActionValue& Value)
     FVector2D LookVector = Value.Get<FVector2D>();
     AddControllerYawInput(LookVector.X);
     AddControllerPitchInput(LookVector.Y);
+}
+
+void AMSPlayerCharacter::MouseWUp()
+{
+    InventoryComponent->SwitchWeapon(true);
+}
+
+void AMSPlayerCharacter::MouseWDown()
+{
+    InventoryComponent->SwitchWeapon(false);
+}
+
+void AMSPlayerCharacter::LeftMouseButton()
+{
+    EquipmentComponent->FirstAction();
 }

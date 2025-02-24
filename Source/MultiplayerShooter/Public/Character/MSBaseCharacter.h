@@ -4,12 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Character/Interfaces/MSInteractInteface.h"
 #include "MSBaseCharacter.generated.h"
 
 class UMSInventoryComponent;
+class UMSEquipmentComponent;
+class USceneComponent;
 
 UCLASS(Abstract)
-class MULTIPLAYERSHOOTER_API AMSBaseCharacter : public ACharacter
+class MULTIPLAYERSHOOTER_API AMSBaseCharacter : public ACharacter, public IMSInteractInteface
 {
     GENERATED_BODY()
 
@@ -19,4 +22,10 @@ public:
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Components")
     UMSInventoryComponent* InventoryComponent;
+    UPROPERTY(EditDefaultsOnly, Category = "Components")
+    UMSEquipmentComponent* EquipmentComponent;
+    UPROPERTY(EditDefaultsOnly, Category = "Settings")
+    USceneComponent* SceneComponentPointAttach;
+
+    virtual bool PickUp(FItem InItem) override;
 };

@@ -5,27 +5,31 @@
 #include "CoreMinimal.h"
 #include "Objects/MSItem.h"
 #include "Data/MSWeaponDataAsset.h"
+#include "Core/MSFStructItem.h"
 #include "MSWeapon.generated.h"
 
 class UStaticMesh;
 
-UCLASS(Abstract)
-class MULTIPLAYERSHOOTER_API AMSWeapon : public AMSItem
+UCLASS()
+class MULTIPLAYERSHOOTER_API AMSWeapon final : public AMSItem
 {
     GENERATED_BODY()
 
 public:
     AMSWeapon();
+    virtual void Use() override;
+    bool ValidFirstModule() const;
+    bool ValidSecondModule() const;
 
-protected:
-    UPROPERTY(EditAnyWhere, Category = "Settings");
-    UMSWeaponDataAsset* WeaponDataAsset;
-
+private:
     UPROPERTY()
     UStaticMesh* StaticMeshWeapon;
     EWeaponType WeaponType;
-    float Damage;
+    void OffModule(FModule &FModuleWeapon);
+    bool validFirstModule = false;
+    bool validSecondModule = false;
 
-    virtual void Init() override;
     virtual void OnConstruction(const FTransform& Transform) override;
+    virtual void LoadDefaultSettings() override;
+    virtual void Init(bool LoadDefault = false) override;
 };
